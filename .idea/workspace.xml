@@ -6,6 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="f76883fd-98dc-4c7e-9ca3-0299bb4b8d20" name="Changes" comment="fix: workflow">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,6 +35,12 @@
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
                 <item name="simplecloud-controller" type="f1a62948:ProjectNode" />
                 <item name="Tasks" type="e4a08cd1:TasksNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="simplecloud-controller" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="publishing" type="c8890929:TasksNode$1" />
               </path>
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
@@ -81,6 +88,8 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Gradle.controller [publishAllPublicationsToSimplecloudRepository].executor": "Run",
+    "Gradle.controller [publishMavenJavaPublicationToSimplecloudRepository].executor": "Run",
     "Gradle.controller [shadowJar].executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
@@ -99,7 +108,7 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
-  <component name="RunManager" selected="Gradle.controller [publishAllPublicationsToSimplecloudRepository]">
+  <component name="RunManager" selected="Gradle.controller [publishMavenJavaPublicationToSimplecloudRepository]">
     <configuration name="controller [publishAllPublicationsToSimplecloudRepository]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -112,6 +121,28 @@
         <option name="taskNames">
           <list>
             <option value="publishAllPublicationsToSimplecloudRepository" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="controller [publishMavenJavaPublicationToSimplecloudRepository]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="publishMavenJavaPublicationToSimplecloudRepository" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -146,6 +177,7 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Gradle.controller [publishMavenJavaPublicationToSimplecloudRepository]" />
         <item itemvalue="Gradle.controller [publishAllPublicationsToSimplecloudRepository]" />
         <item itemvalue="Gradle.controller [shadowJar]" />
       </list>
@@ -168,7 +200,7 @@
       <option name="presentableId" value="Default" />
       <updated>1738435711141</updated>
       <workItem from="1738435713035" duration="7085000" />
-      <workItem from="1738442920046" duration="873000" />
+      <workItem from="1738442920046" duration="1560000" />
     </task>
     <task id="LOCAL-00001" summary="fix: workflow">
       <option name="closed" value="true" />
@@ -290,7 +322,15 @@
       <option name="project" value="LOCAL" />
       <updated>1738442503731</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="fix: workflow">
+      <option name="closed" value="true" />
+      <created>1738444022127</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1738444022127</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

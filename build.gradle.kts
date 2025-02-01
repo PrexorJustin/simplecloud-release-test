@@ -56,6 +56,8 @@ subprojects {
             maven {
                 name = "simplecloud"
                 url = uri(determineRepositoryUrl())
+                //remove for production
+                isAllowInsecureProtocol = true
                 credentials {
                     username = System.getenv("SIMPLECLOUD_USERNAME")
                         ?: (project.findProperty("simplecloudUsername") as? String)
