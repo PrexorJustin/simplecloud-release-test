@@ -11,6 +11,7 @@ java {
 tasks.named<Jar>("sourcesJar") {
     dependsOn(tasks.named("jooqCodegen"))
     from(project.layout.buildDirectory.dir("generated/source/db/main/java"))
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
 dependencies {
