@@ -70,13 +70,6 @@ jobs:
           
           echo "CHANNEL=$CHANNEL" >> $GITHUB_OUTPUT
           echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
-          
-      - name: Import GPG key
-        run: |
-          echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
-          echo "allow-preset-passphrase" > ~/.gnupg/gpg-agent.conf
-          gpg-connect-agent reloadagent /bye
-          echo "${{ secrets.GPG_PASSPHRASE }}" | gpg --batch --passphrase-fd 0 --pinentry-mode loopback -ab test.txt
 
       - name: Build with Gradle
         run: |
@@ -86,7 +79,6 @@ jobs:
         env:
           SIMPLECLOUD_USERNAME: ${{ secrets.SIMPLECLOUD_USERNAME }}
           SIMPLECLOUD_PASSWORD: ${{ secrets.SIMPLECLOUD_PASSWORD }}
-          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
           COMMIT_HASH: ${{ env.COMMIT_HASH }}
 
       # Create channel-specific directory for artifacts
