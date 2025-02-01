@@ -94,6 +94,7 @@ subprojects {
     kotlin {
         jvmToolchain(21)
         compilerOptions {
+            languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_1)
             apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_1)
             jvmTarget.set(JvmTarget.JVM_21)
             freeCompilerArgs.addAll("-Xjsr305=strict")
