@@ -96,10 +96,6 @@ subprojects {
         archiveClassifier.set("")
     }
 
-    tasks.named("jar") {
-        enabled = false
-    }
-
     tasks.test {
         useJUnitPlatform()
     }
