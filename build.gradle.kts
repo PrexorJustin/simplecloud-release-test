@@ -135,7 +135,6 @@ subprojects {
     }
 
     signing {
-        // Only sign releases
         val releaseType = project.findProperty("releaseType")?.toString() ?: "snapshot"
         if (releaseType != "release") {
             return@signing

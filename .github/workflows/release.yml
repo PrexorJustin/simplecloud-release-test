@@ -93,6 +93,9 @@ jobs:
           mkdir -p release-artifacts
           find . -name "*.jar" -path "*/build/libs/*" -exec cp {} release-artifacts/ \;
 
+      - name: List Artifacts
+        run: ls -la release-artifacts/
+
       # Update channel tag
       - name: Update Channel Tag
         run: |
