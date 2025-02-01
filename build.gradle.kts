@@ -20,6 +20,15 @@ fun determineVersion(): String {
     }
 }
 
+fun determineRepositoryUrl(): String {
+    val baseUrl = "http://172.26.96.250"
+    return when (project.findProperty("releaseType")?.toString() ?: "snapshot") {
+        "release" -> "$baseUrl/releases"
+        "rc" -> "$baseUrl/rc"
+        else -> "$baseUrl/snapshots"
+    }
+}
+
 allprojects {
     group = "app.simplecloud.controller"
     version = determineVersion()
@@ -46,7 +55,7 @@ subprojects {
         repositories {
             maven {
                 name = "simplecloud"
-                url = uri("https://repo.simplecloud.app/snapshots/")
+                url = uri(determineRepositoryUrl())
                 credentials {
                     username = System.getenv("SIMPLECLOUD_USERNAME")
                         ?: (project.findProperty("simplecloudUsername") as? String)
