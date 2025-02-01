@@ -58,20 +58,14 @@ jobs:
           if [[ -z "$VERSION" ]]; then
             COMMIT_HASH=$(git rev-parse --short HEAD)
             echo "COMMIT_HASH=$COMMIT_HASH" >> $GITHUB_ENV
-          
-            BASE_VERSION=$(grep 'val baseVersion' build.gradle | cut -d'"' -f2)
-          
-            case $CHANNEL in
-              "release")
-                VERSION="$BASE_VERSION"
-                ;;
-              "rc")
-                VERSION="${BASE_VERSION}-rc.${COMMIT_HASH}"
-                ;;
-              "snapshot")
-                VERSION="${BASE_VERSION}-SNAPSHOT.${COMMIT_HASH}"
-                ;;
-            esac
+            
+            # Get the version by letting Gradle tell us
+            VERSION=$(./gradlew properties -q | grep "version:" | awk '{print $2}')
+            
+            if [[ -z "$VERSION" ]]; then
+              echo "Error: Could not determine version from Gradle"
+              exit 1
+            fi
           fi
           
           echo "CHANNEL=$CHANNEL" >> $GITHUB_OUTPUT
