@@ -1,10 +1,14 @@
-name: Create Release with ShadowJars
+name: Build and Deploy
 
 on:
+  push:
+    branches:
+      - develop  # For snapshot builds
+      - main    # For release builds
   workflow_dispatch:
     inputs:
       channel:
-        description: 'Release channel'
+        description: 'Release Channel'
         required: true
         default: 'snapshot'
         type: choice
@@ -12,105 +16,102 @@ on:
           - snapshot
           - rc
           - release
+      version:
+        description: 'Version (only for release channel)'
+        required: false
+        type: string
 
 jobs:
   build:
-    name: Build ShadowJars and Create Release
     runs-on: ubuntu-latest
     permissions:
       contents: write
-
     steps:
-      - name: Checkout repository
+      - name: Checkout Code
         uses: actions/checkout@v3
         with:
-          ref: develop  # Ensure you build from the develop branch
+          fetch-depth: 0
 
       - name: Set up JDK 21
         uses: actions/setup-java@v3
         with:
-          distribution: 'adopt'
+          distribution: 'temurin'
           java-version: '21'
 
-      - name: Cache Gradle packages
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            gradle-${{ runner.os }}
-
-      - name: Make gradlew executable
+      - name: Make Gradle Wrapper Executable
         run: chmod +x ./gradlew
 
       - name: Determine Version and Channel
         id: version
         run: |
-          # Get channel from workflow input
-          CHANNEL="${{ github.event.inputs.channel }}"
-          echo "Selected channel: $CHANNEL"
-          
+          # If triggered manually, use workflow input; otherwise, decide based on branch name
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            CHANNEL="${{ github.event.inputs.channel }}"
+            if [[ "$CHANNEL" == "release" && -n "${{ github.event.inputs.version }}" ]]; then
+              VERSION="${{ github.event.inputs.version }}"
+            fi
+          elif [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            CHANNEL="release"
+          else
+            CHANNEL="snapshot"
+          fi
+
+          # Get the commit hash (short version)
+          COMMIT_HASH=$(git rev-parse --short HEAD)
+          echo "COMMIT_HASH=$COMMIT_HASH" >> $GITHUB_ENV
+
           # Read the base version from gradle.properties (should be "0.0.1")
           BASE_VERSION=$(grep '^version=' gradle.properties | cut -d'=' -f2)
-          echo "Base version: $BASE_VERSION"
-          
-          # Get current commit hash (short)
-          COMMIT_HASH=$(git rev-parse --short HEAD)
-          echo "Commit hash: $COMMIT_HASH"
-          
-          # Compute final version based on channel
-          if [ "$CHANNEL" = "release" ]; then
+          if [ "$CHANNEL" == "release" ]; then
             FINAL_VERSION="$BASE_VERSION"
-          elif [ "$CHANNEL" = "rc" ]; then
+          elif [ "$CHANNEL" == "rc" ]; then
             FINAL_VERSION="${BASE_VERSION}-rc.${COMMIT_HASH}"
           else
             FINAL_VERSION="${BASE_VERSION}-SNAPSHOT.${COMMIT_HASH}"
           fi
-          echo "Computed final version: $FINAL_VERSION"
-          
-          # Export variables for later steps
-          echo "CHANNEL=$CHANNEL" >> $GITHUB_ENV
-          echo "FINAL_VERSION=$FINAL_VERSION" >> $GITHUB_ENV
-          echo "BASE_VERSION=$BASE_VERSION" >> $GITHUB_ENV
-          echo "final_version=$FINAL_VERSION" >> $GITHUB_OUTPUT
-          echo "channel=$CHANNEL" >> $GITHUB_OUTPUT
+          echo "Determined version: $FINAL_VERSION"
 
-      - name: Build ShadowJars
+          # Set outputs for later steps
+          echo "CHANNEL=$CHANNEL" >> $GITHUB_OUTPUT
+          echo "VERSION=$FINAL_VERSION" >> $GITHUB_OUTPUT
+
+      - name: Build with Gradle
         run: |
-          ./gradlew clean build shadowJar -PreleaseType=${{ env.CHANNEL }} -Pversion=${{ env.FINAL_VERSION }}
+          ./gradlew clean build shadowJar \
+            -PreleaseType=${{ steps.version.outputs.CHANNEL }} \
+            -Pversion=${{ steps.version.outputs.VERSION }}
         env:
           COMMIT_HASH: ${{ env.COMMIT_HASH }}
 
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        with:
-          tag_name: v${{ env.FINAL_VERSION }}
-          release_name: v${{ env.FINAL_VERSION }}
-          draft: false
-          prerelease: ${{ env.CHANNEL != 'release' }}
-          commitish: develop
-          body: |
-            This release (channel: ${{ env.CHANNEL }}) contains dev builds for all Gradle modules.
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload ShadowJars to Release
+      - name: Prepare Artifacts
         run: |
-          # Only upload jar files whose names do NOT contain the base version (e.g., "0.0.1")
-          echo "Uploading fat jar artifacts (files without '$BASE_VERSION' in the name):"
-          for jar in $(find . -type f -name "*.jar" -path "*/build/libs/*.jar" -not -path "./build/libs/*"); do
-            FILENAME=$(basename "$jar")
-            if [[ "$FILENAME" == *"$BASE_VERSION"* ]]; then
-              echo "Skipping $jar (contains base version)"
-            else
-              echo "Uploading $jar"
-              gh release upload v${{ env.FINAL_VERSION }} "$jar"
-            fi
-          done
+          mkdir -p release-artifacts
+          # Copy all jar files produced in the build/libs directory.
+          # (Ensure your build disables the default jar task if you only want the shadowJar artifact.)
+          find . -name "*.jar" -path "*/build/libs/*" -exec cp {} release-artifacts/ \;
+          ls -la release-artifacts/
+
+      - name: Update Channel Tag
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          # Delete any existing channel tag locally and remotely
+          git tag -d ${{ steps.version.outputs.CHANNEL }} || true
+          git push origin :refs/tags/${{ steps.version.outputs.CHANNEL }} || true
+          # Create a new tag at the current commit
+          git tag -a ${{ steps.version.outputs.CHANNEL }} -m "Latest ${{ steps.version.outputs.CHANNEL }} build (v${{ steps.version.outputs.VERSION }})"
+          git push origin ${{ steps.version.outputs.CHANNEL }} --force
+
+      - name: Create Channel Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: "${{ steps.version.outputs.CHANNEL }} channel"
+          tag_name: ${{ steps.version.outputs.CHANNEL }}
+          body: |
+            Latest build in the ${{ steps.version.outputs.CHANNEL }} channel.
+            Version: ${{ steps.version.outputs.VERSION }}
+            Commit: ${{ github.sha }}
+          prerelease: ${{ steps.version.outputs.CHANNEL != 'release' }}
+          files: release-artifacts/*.jar
         env:
-          BASE_VERSION: ${{ env.BASE_VERSION }}
-          FINAL_VERSION: ${{ env.FINAL_VERSION }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
