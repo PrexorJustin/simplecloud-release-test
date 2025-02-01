@@ -40,7 +40,7 @@ jobs:
 
       - name: Make Gradle wrapper executable
         run: chmod +x ./gradlew
-        
+
       - name: Determine Version and Channel
         id: version
         run: |
@@ -58,10 +58,10 @@ jobs:
           if [[ -z "$VERSION" ]]; then
             COMMIT_HASH=$(git rev-parse --short HEAD)
             echo "COMMIT_HASH=$COMMIT_HASH" >> $GITHUB_ENV
-            
+          
             # Get the version by letting Gradle tell us
             VERSION=$(./gradlew properties -q | grep "version:" | awk '{print $2}')
-            
+          
             if [[ -z "$VERSION" ]]; then
               echo "Error: Could not determine version from Gradle"
               exit 1
@@ -73,9 +73,14 @@ jobs:
 
       - name: Build with Gradle
         run: |
-          ./gradlew build shadowJar publish \
-            -Pversion=${{ steps.version.outputs.VERSION }} \
-            -PreleaseType=${{ steps.version.outputs.CHANNEL }}
+          if [[ "${{ steps.version.outputs.CHANNEL }}" == "release" ]]; then
+            ./gradlew build shadowJar publish \
+              -Pversion=${{ steps.version.outputs.VERSION }} \
+              -PreleaseType=${{ steps.version.outputs.CHANNEL }}
+          else
+            ./gradlew build shadowJar \
+              -Pversion=${{ steps.version.outputs.VERSION }} \
+              -PreleaseType=${{ steps.version.outputs.CHANNEL }}
         env:
           SIMPLECLOUD_USERNAME: ${{ secrets.SIMPLECLOUD_USERNAME }}
           SIMPLECLOUD_PASSWORD: ${{ secrets.SIMPLECLOUD_PASSWORD }}
