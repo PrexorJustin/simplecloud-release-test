@@ -71,7 +71,7 @@ jobs:
           echo "COMMIT_HASH=$COMMIT_HASH" >> $GITHUB_ENV
 
           # Read the base version from gradle.properties
-          BASE_VERSION=$(grep '^version=' gradle.properties | cut -d'=' -f2)
+          BASE_VERSION=$(grep '^baseVersion=' gradle.properties | cut -d'=' -f2)
           if [ "$CHANNEL" == "release" ]; then
             FINAL_VERSION="$BASE_VERSION"
           elif [ "$CHANNEL" == "rc" ]; then
