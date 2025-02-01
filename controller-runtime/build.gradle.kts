@@ -4,6 +4,15 @@ plugins {
     java
 }
 
+java {
+    withSourcesJar()
+}
+
+tasks.named<Jar>("sourcesJar") {
+    dependsOn(tasks.named("jooqCodegen"))
+    from(project.layout.buildDirectory.dir("generated/source/db/main/java"))
+}
+
 dependencies {
     api(project(":controller-shared"))
     api(libs.bundles.jooq)
