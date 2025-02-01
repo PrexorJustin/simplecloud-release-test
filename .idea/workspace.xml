@@ -5,7 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f76883fd-98dc-4c7e-9ca3-0299bb4b8d20" name="Changes" comment="fix: workflow">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.github/workflows/release.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/release.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -76,6 +76,9 @@
 }</component>
   <component name="GoLibraries">
     <option name="indexEntireGoPath" value="true" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 3
@@ -199,7 +202,7 @@
       <option name="presentableId" value="Default" />
       <updated>1738435711141</updated>
       <workItem from="1738435713035" duration="7085000" />
-      <workItem from="1738442920046" duration="5763000" />
+      <workItem from="1738442920046" duration="5921000" />
     </task>
     <task id="LOCAL-00001" summary="fix: workflow">
       <option name="closed" value="true" />
@@ -385,7 +388,15 @@
       <option name="project" value="LOCAL" />
       <updated>1738447963799</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="fix: workflow">
+      <option name="closed" value="true" />
+      <created>1738449514188</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1738449514188</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
