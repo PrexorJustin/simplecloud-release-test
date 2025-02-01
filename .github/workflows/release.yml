@@ -85,10 +85,17 @@ jobs:
 
       - name: Prepare Artifacts
         run: |
-          mkdir -p release-artifacts
-          # Copy all jar files produced in the build/libs directory.
-          # (Ensure your build disables the default jar task if you only want the shadowJar artifact.)
-          find . -name "*.jar" -path "*/build/libs/*" -exec cp {} release-artifacts/ \;
+          # Only upload jar files whose names do NOT contain the base version (e.g., "0.0.1")
+          echo "Uploading fat jar artifacts (files without '$BASE_VERSION' in the name):"
+          for jar in $(find . -type f -name "*.jar" -path "*/build/libs/*.jar" -not -path "./build/libs/*"); do
+           FILENAME=$(basename "$jar")
+           if [[ "$FILENAME" == *"$BASE_VERSION"* ]]; then
+             echo "Skipping $jar (contains base version)"
+           else
+             echo "Copying $jar"
+             cp "$jar" release-artifacts/
+           fi
+          done
           ls -la release-artifacts/
 
       - name: Update Channel Tag
