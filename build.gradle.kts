@@ -9,7 +9,7 @@ plugins {
 }
 
 fun determineVersion(): String {
-    val baseVersion = project.findProperty("version")?.toString() ?: "0.0.0"
+    val baseVersion = project.findProperty("baseVersion")?.toString() ?: "0.0.0"
     val releaseType = project.findProperty("releaseType")?.toString() ?: "snapshot"
     val commitHash = System.getenv("COMMIT_HASH") ?: "local"
 
@@ -94,8 +94,8 @@ subprojects {
     kotlin {
         jvmToolchain(21)
         compilerOptions {
-            languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_1)
-            apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_1)
+            languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_0)
+            apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_0)
             jvmTarget.set(JvmTarget.JVM_21)
             freeCompilerArgs.addAll("-Xjsr305=strict")
         }
