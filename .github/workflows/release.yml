@@ -90,7 +90,7 @@ jobs:
           echo "Uploading fat jar artifacts (files without '$BASE_VERSION' in the name):"
           for jar in $(find . -type f -name "*.jar" -path "*/build/libs/*.jar" -not -path "./build/libs/*"); do
            FILENAME=$(basename "$jar")
-           if [[ "$FILENAME" == *"$BASE_VERSION"* ]]; then
+           if [[ "$FILENAME" == *"${{ steps.version.outputs.VERSION }}"* ]]; then
              echo "Skipping $jar (contains base version)"
            else
              echo "Copying $jar"
