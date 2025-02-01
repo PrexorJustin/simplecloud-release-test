@@ -21,7 +21,7 @@ fun determineVersion(): String {
 }
 
 fun determineRepositoryUrl(): String {
-    val baseUrl = "http://172.26.96.250"
+    val baseUrl = "http://95.216.145.156"
     return when (project.findProperty("releaseType")?.toString() ?: "snapshot") {
         "release" -> "$baseUrl/releases"
         "rc" -> "$baseUrl/rc"
