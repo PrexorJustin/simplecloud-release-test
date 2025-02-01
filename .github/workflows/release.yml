@@ -77,7 +77,7 @@ jobs:
 
       - name: Build with Gradle
         run: |
-          ./gradlew clean build shadowJar \
+          ./gradlew clean build publish \
             -PreleaseType=${{ steps.version.outputs.CHANNEL }} \
             -Pversion=${{ steps.version.outputs.VERSION }}
         env:

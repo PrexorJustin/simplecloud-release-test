@@ -75,6 +75,8 @@ subprojects {
             }
 
             create<MavenPublication>("mavenJava") {
+                artifact(tasks.named("shadowJar"))
+
                 from(components["java"])
             }
         }
@@ -94,6 +96,7 @@ subprojects {
     tasks.named("shadowJar", ShadowJar::class) {
         mergeServiceFiles()
         archiveFileName.set("${project.name}.jar")
+        archiveClassifier.set("")
     }
 
     tasks.test {
