@@ -3,8 +3,8 @@ name: Build and Deploy
 on:
   push:
     branches:
-      - develop
-      - main
+      - develop  # For snapshot builds
+      - main    # For release builds
     paths-ignore:
       - '**.md'
       - '.gitignore'
@@ -49,6 +49,9 @@ jobs:
           build-scan-publish: true
           build-scan-terms-of-use-url: 'https://gradle.com/help/legal-terms-of-use'
           build-scan-terms-of-use-agree: 'yes'
+
+      - name: Make Gradle Wrapper Executable
+        run: chmod +x ./gradlew
 
       - name: Determine Version and Channel
         id: version
