@@ -81,6 +81,7 @@ jobs:
             ./gradlew build shadowJar \
               -Pversion=${{ steps.version.outputs.VERSION }} \
               -PreleaseType=${{ steps.version.outputs.CHANNEL }}
+          fi
         env:
           SIMPLECLOUD_USERNAME: ${{ secrets.SIMPLECLOUD_USERNAME }}
           SIMPLECLOUD_PASSWORD: ${{ secrets.SIMPLECLOUD_PASSWORD }}
