@@ -1,0 +1,146 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - develop  # For snapshots
+      - main    # For releases
+  workflow_dispatch:
+    inputs:
+      channel:
+        description: 'Release Channel'
+        required: true
+        default: 'snapshot'
+        type: choice
+        options:
+          - snapshot
+          - rc
+          - release
+      version:
+        description: 'Version (only for release channel)'
+        required: false
+        type: string
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'adopt'
+          java-version: '21'
+
+      - name: Make Gradle wrapper executable
+        run: chmod +x ./gradlew
+
+      - name: Determine Version and Channel
+        id: version
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            CHANNEL="${{ github.event.inputs.channel }}"
+            if [[ "$CHANNEL" == "release" && -n "${{ github.event.inputs.version }}" ]]; then
+              VERSION="${{ github.event.inputs.version }}"
+            fi
+          elif [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            CHANNEL="release"
+          else
+            CHANNEL="snapshot"
+          fi
+          
+          if [[ -z "$VERSION" ]]; then
+            COMMIT_HASH=$(git rev-parse --short HEAD)
+            echo "COMMIT_HASH=$COMMIT_HASH" >> $GITHUB_ENV
+          
+            BASE_VERSION=$(grep 'val baseVersion' build.gradle | cut -d'"' -f2)
+          
+            case $CHANNEL in
+              "release")
+                VERSION="$BASE_VERSION"
+                ;;
+              "rc")
+                VERSION="${BASE_VERSION}-rc.${COMMIT_HASH}"
+                ;;
+              "snapshot")
+                VERSION="${BASE_VERSION}-SNAPSHOT.${COMMIT_HASH}"
+                ;;
+            esac
+          fi
+          
+          echo "CHANNEL=$CHANNEL" >> $GITHUB_OUTPUT
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Build with Gradle
+        run: |
+          ./gradlew build shadowJar publish \
+            -Pversion=${{ steps.version.outputs.VERSION }} \
+            -PreleaseType=${{ steps.version.outputs.CHANNEL }}
+        env:
+          SIMPLECLOUD_USERNAME: ${{ secrets.SIMPLECLOUD_USERNAME }}
+          SIMPLECLOUD_PASSWORD: ${{ secrets.SIMPLECLOUD_PASSWORD }}
+          COMMIT_HASH: ${{ env.COMMIT_HASH }}
+
+      # Create channel-specific directory for artifacts
+      - name: Prepare artifacts
+        run: |
+          mkdir -p release-artifacts
+          find . -name "*.jar" -path "*/build/libs/*" -exec cp {} release-artifacts/ \;
+
+      # Update channel tag
+      - name: Update Channel Tag
+        run: |
+          CHANNEL="${{ steps.version.outputs.CHANNEL }}"
+          
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          
+          # Delete existing tag locally and remotely
+          git tag -d $CHANNEL || true
+          git push origin :refs/tags/$CHANNEL || true
+          
+          # Create new tag at current commit
+          git tag -a $CHANNEL -m "Latest $CHANNEL build (v${{ steps.version.outputs.VERSION }})"
+          git push origin $CHANNEL --force
+
+      # Delete old release for this channel (if exists)
+      - name: Delete Old Channel Release
+        run: |
+          CHANNEL="${{ steps.version.outputs.CHANNEL }}"
+          RELEASE_ID=$(gh api \
+            -H "Accept: application/vnd.github+json" \
+            /repos/${{ github.repository }}/releases/tags/$CHANNEL \
+            --jq '.id' || echo "")
+          
+          if [ ! -z "$RELEASE_ID" ]; then
+            gh api \
+              --method DELETE \
+              -H "Accept: application/vnd.github+json" \
+              /repos/${{ github.repository }}/releases/$RELEASE_ID
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Create new channel release
+      - name: Create Channel Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: "${{ steps.version.outputs.CHANNEL }} channel"
+          tag_name: ${{ steps.version.outputs.CHANNEL }}
+          body: |
+            Latest build in ${{ steps.version.outputs.CHANNEL }} channel
+            Version: ${{ steps.version.outputs.VERSION }}
+            Commit: ${{ github.sha }}
+            
+            This release represents the latest build in the ${{ steps.version.outputs.CHANNEL }} channel.
+          prerelease: ${{ steps.version.outputs.CHANNEL != 'release' }}
+          files: release-artifacts/*.jar
+          draft: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

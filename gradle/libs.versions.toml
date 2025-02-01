@@ -1,0 +1,69 @@
+[versions]
+kotlin = "2.0.20"
+kotlin-coroutines = "1.9.0"
+shadow = "8.3.3"
+log4j = "2.20.0"
+droplet-api = "0.0.1-dev.16b322c"
+simplecloud-pubsub = "1.0.5"
+simplecloud-metrics = "1.0.0"
+jooq = "3.19.3"
+configurate = "4.1.2"
+sqlite-jdbc = "3.44.1.0"
+clikt = "5.0.1"
+sonatype-central-portal-publisher = "1.2.3"
+spotify-completablefutures = "0.3.6"
+spring-crypto = "6.3.4"
+envoy = "1.0.46"
+
+[libraries]
+kotlin-jvm = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin" }
+kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
+kotlin-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlin-coroutines" }
+
+log4j-core = { module = "org.apache.logging.log4j:log4j-core", version.ref = "log4j" }
+log4j-api = { module = "org.apache.logging.log4j:log4j-api", version.ref = "log4j" }
+log4j-slf4j = { module = "org.apache.logging.log4j:log4j-slf4j-impl", version.ref = "log4j" }
+
+simplecloud-droplet-api = { module = "app.simplecloud.droplet.api:droplet-api", version.ref = "droplet-api" }
+simplecloud-pubsub = { module = "app.simplecloud:simplecloud-pubsub", version.ref = "simplecloud-pubsub" }
+simplecloud-metrics = { module = "app.simplecloud:internal-metrics-api", version.ref = "simplecloud-metrics" }
+
+jooq = { module = "org.jooq:jooq-kotlin", version.ref = "jooq" }
+jooq-meta = { module = "org.jooq:jooq-meta", version.ref = "jooq" }
+jooq-meta-extensions = { module = "org.jooq:jooq-meta-extensions", version.ref = "jooq" }
+jooq-kotlin-coroutines = { module = "org.jooq:jooq-kotlin-coroutines", version.ref = "jooq" }
+
+configurate-yaml = { module = "org.spongepowered:configurate-yaml", version.ref = "configurate" }
+configurate-extra-kotlin = { module = "org.spongepowered:configurate-extra-kotlin", version.ref = "configurate" }
+
+sqlite-jdbc = { module = "org.xerial:sqlite-jdbc", version.ref = "sqlite-jdbc" }
+
+clikt = { module = "com.github.ajalt.clikt:clikt", version.ref = "clikt" }
+
+spotify-completablefutures = { module = "com.spotify:completable-futures", version.ref = "spotify-completablefutures" }
+
+spring-crypto = { module = "org.springframework.security:spring-security-crypto", version.ref = "spring-crypto" }
+envoy-controlplane = { module = "io.envoyproxy.controlplane:server", version.ref = "envoy" }
+
+
+[bundles]
+log4j = [
+    "log4j-core",
+    "log4j-api",
+    "log4j-slf4j"
+]
+jooq = [
+    "jooq",
+    "jooq-meta",
+    "jooq-kotlin-coroutines"
+]
+configurate = [
+    "configurate-yaml",
+    "configurate-extra-kotlin"
+]
+
+[plugins]
+kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+shadow = { id = "com.gradleup.shadow", version.ref = "shadow" }
+jooq-codegen = { id = "org.jooq.jooq-codegen-gradle", version.ref = "jooq" }
+sonatype-central-portal-publisher = { id = "net.thebugmc.gradle.sonatype-central-portal-publisher", version.ref = "sonatype-central-portal-publisher" }
