@@ -8,7 +8,7 @@ plugins {
 }
 
 fun determineVersion(): String {
-    val baseVersion = "0.0.30"
+    val baseVersion = project.findProperty("version")?.toString() ?: "0.0.0"
     val releaseType = project.findProperty("releaseType")?.toString() ?: "snapshot"
     val commitHash = System.getenv("COMMIT_HASH") ?: "local"
 
