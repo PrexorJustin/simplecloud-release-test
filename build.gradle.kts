@@ -69,14 +69,11 @@ subprojects {
         }
 
         publications {
-            // Not publish controller-runtime
             if (project.name == "controller-runtime") {
                 return@publications
             }
 
             create<MavenPublication>("mavenJava") {
-                artifact(tasks.named("shadowJar"))
-
                 from(components["java"])
             }
         }

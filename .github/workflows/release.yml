@@ -77,11 +77,18 @@ jobs:
 
       - name: Build with Gradle
         run: |
-          ./gradlew clean build publish \
+          ./gradlew clean build shadowJar \
             -PreleaseType=${{ steps.version.outputs.CHANNEL }} \
             -Pversion=${{ steps.version.outputs.VERSION }}
         env:
           COMMIT_HASH: ${{ env.COMMIT_HASH }}
+
+      - name: Publish to SimpleCloud Repository
+        run: ./gradlew publishMavenJavaPublicationToSimplecloudRepository
+        env:
+          COMMIT_HASH: ${{ env.COMMIT_HASH }}
+          SIMPLECLOUD_USERNAME: ${{ secrets.SIMPLECLOUD_USERNAME }}
+          SIMPLECLOUD_PASSWORD: ${{ secrets.SIMPLECLOUD_PASSWORD }}
 
       - name: Prepare Artifacts
         run: |
