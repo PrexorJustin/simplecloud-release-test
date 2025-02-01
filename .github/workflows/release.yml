@@ -85,6 +85,7 @@ jobs:
 
       - name: Prepare Artifacts
         run: |
+          mkdir -p release-artifacts
           # Only upload jar files whose names do NOT contain the base version (e.g., "0.0.1")
           echo "Uploading fat jar artifacts (files without '$BASE_VERSION' in the name):"
           for jar in $(find . -type f -name "*.jar" -path "*/build/libs/*.jar" -not -path "./build/libs/*"); do
