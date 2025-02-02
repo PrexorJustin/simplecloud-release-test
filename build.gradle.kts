@@ -156,9 +156,10 @@ subprojects {
             val signingKey: String? by project
             val signingPassphrase: String? by project
             useInMemoryPgpKeys(signingKey, signingPassphrase)
-            sign(publishing.publications)
+        } else {
+            useGpgCmd()
         }
-//        useGpgCmd()
-//        sign(publishing.publications)
+
+        sign(publishing.publications)
     }
 }
