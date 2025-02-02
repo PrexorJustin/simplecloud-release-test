@@ -3,8 +3,12 @@ name: Build and Deploy
 on:
   push:
     branches:
-      - develop  # For snapshots
-      - main    # For releases
+      - develop  # For snapshot builds
+      - main    # For release builds
+    paths-ignore:
+      - '**.md'
+      - '.gitignore'
+      - 'LICENSE'
   workflow_dispatch:
     inputs:
       channel:
@@ -26,24 +30,33 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout Code
+        uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 1
 
       - name: Set up JDK 21
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4.7.0
         with:
-          distribution: 'adopt'
+          distribution: 'temurin'
           java-version: '21'
+          cache: 'gradle'
 
-      - name: Make Gradle wrapper executable
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          build-scan-publish: true
+          build-scan-terms-of-use-url: 'https://gradle.com/help/legal-terms-of-use'
+          build-scan-terms-of-use-agree: 'yes'
+
+      - name: Make Gradle Wrapper Executable
         run: chmod +x ./gradlew
-        
+
       - name: Determine Version and Channel
         id: version
         run: |
+          # If triggered manually, use workflow input; otherwise, decide based on branch name
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
             CHANNEL="${{ github.event.inputs.channel }}"
             if [[ "$CHANNEL" == "release" && -n "${{ github.event.inputs.version }}" ]]; then
@@ -54,95 +67,94 @@ jobs:
           else
             CHANNEL="snapshot"
           fi
-          
-          if [[ -z "$VERSION" ]]; then
-            COMMIT_HASH=$(git rev-parse --short HEAD)
-            echo "COMMIT_HASH=$COMMIT_HASH" >> $GITHUB_ENV
-            
-            # Get the version by letting Gradle tell us
-            VERSION=$(./gradlew properties -q | grep "version:" | awk '{print $2}')
-            
-            if [[ -z "$VERSION" ]]; then
-              echo "Error: Could not determine version from Gradle"
-              exit 1
-            fi
+
+          # Get the commit hash (short version)
+          COMMIT_HASH=$(git rev-parse --short HEAD)
+          echo "COMMIT_HASH=$COMMIT_HASH" >> $GITHUB_ENV
+
+          # Read the base version from gradle.properties
+          BASE_VERSION=$(grep '^baseVersion=' gradle.properties | cut -d'=' -f2)
+          if [ "$CHANNEL" == "release" ]; then
+            FINAL_VERSION="$BASE_VERSION"
+          elif [ "$CHANNEL" == "rc" ]; then
+            FINAL_VERSION="${BASE_VERSION}-rc.${COMMIT_HASH}"
+          else
+            FINAL_VERSION="${BASE_VERSION}-SNAPSHOT.${COMMIT_HASH}"
           fi
-          
+          echo "Determined version: $FINAL_VERSION"
+
+          # Set outputs for later steps
           echo "CHANNEL=$CHANNEL" >> $GITHUB_OUTPUT
-          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
-          
-      - name: Import GPG key
+          echo "VERSION=$FINAL_VERSION" >> $GITHUB_OUTPUT
+
+      - name: Import GPG Key
+        if: steps.version.outputs.CHANNEL == 'release'
         run: |
-          echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
+          echo "${{ secrets.GPG_PRIVATE_KEY }}" | base64 -d > private.key
+          
+          mkdir -p ~/.gnupg
           echo "allow-preset-passphrase" > ~/.gnupg/gpg-agent.conf
+          echo "pinentry-mode loopback" >> ~/.gnupg/gpg.conf
           gpg-connect-agent reloadagent /bye
+          
+          echo "test" > test.txt
           echo "${{ secrets.GPG_PASSPHRASE }}" | gpg --batch --passphrase-fd 0 --pinentry-mode loopback -ab test.txt
+          
+          rm test.txt test.txt.asc
+        env:
+          GPG_TTY: $(tty)
 
       - name: Build with Gradle
         run: |
-          ./gradlew build shadowJar publish \
-            -Pversion=${{ steps.version.outputs.VERSION }} \
-            -PreleaseType=${{ steps.version.outputs.CHANNEL }}
+          ./gradlew --parallel --build-cache clean build shadowJar \
+            -PreleaseType=${{ steps.version.outputs.CHANNEL }} \
+            -Pversion=${{ steps.version.outputs.VERSION }}
         env:
-          SIMPLECLOUD_USERNAME: ${{ secrets.SIMPLECLOUD_USERNAME }}
-          SIMPLECLOUD_PASSWORD: ${{ secrets.SIMPLECLOUD_PASSWORD }}
-          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
           COMMIT_HASH: ${{ env.COMMIT_HASH }}
 
-      # Create channel-specific directory for artifacts
-      - name: Prepare artifacts
+      - name: Publish to SimpleCloud Repository
+        run: |
+          if [[ "${{ steps.version.outputs.CHANNEL }}" == "release" ]]; then
+          export ORG_GRADLE_PROJECT_signingKey="${{ secrets.GPG_PRIVATE_KEY }}"
+          export ORG_GRADLE_PROJECT_signingPassword="${{ secrets.GPG_PASSPHRASE }}"
+          fi
+          
+          ./gradlew --parallel --build-cache publishMavenJavaPublicationToSimplecloudRepository \
+            -PreleaseType=${{ steps.version.outputs.CHANNEL }} \
+            -Pversion=${{ steps.version.outputs.VERSION }}
+        env:
+          COMMIT_HASH: ${{ env.COMMIT_HASH }}
+          SIMPLECLOUD_USERNAME: ${{ secrets.SIMPLECLOUD_USERNAME }}
+          SIMPLECLOUD_PASSWORD: ${{ secrets.SIMPLECLOUD_PASSWORD }}
+
+      - name: Prepare Artifacts
         run: |
           mkdir -p release-artifacts
-          find . -name "*.jar" -path "*/build/libs/*" -exec cp {} release-artifacts/ \;
+          find . -type f -name "*.jar" -path "*/build/libs/*.jar" -not -path "./build/libs/*" \
+            -not -name "*${{ steps.version.outputs.VERSION }}*" \
+            -exec cp {} release-artifacts/ \;
 
-      # Update channel tag
       - name: Update Channel Tag
         run: |
-          CHANNEL="${{ steps.version.outputs.CHANNEL }}"
-          
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
-          
-          # Delete existing tag locally and remotely
-          git tag -d $CHANNEL || true
-          git push origin :refs/tags/$CHANNEL || true
-          
-          # Create new tag at current commit
-          git tag -a $CHANNEL -m "Latest $CHANNEL build (v${{ steps.version.outputs.VERSION }})"
-          git push origin $CHANNEL --force
+          # Delete any existing channel tag locally and remotely
+          git tag -d ${{ steps.version.outputs.CHANNEL }} || true
+          git push origin :refs/tags/${{ steps.version.outputs.CHANNEL }} || true
+          # Create a new tag at the current commit
+          git tag -a ${{ steps.version.outputs.CHANNEL }} -m "Latest ${{ steps.version.outputs.CHANNEL }} build (v${{ steps.version.outputs.VERSION }})"
+          git push origin ${{ steps.version.outputs.CHANNEL }} --force
 
-      # Delete old release for this channel (if exists)
-      - name: Delete Old Channel Release
-        run: |
-          CHANNEL="${{ steps.version.outputs.CHANNEL }}"
-          RELEASE_ID=$(gh api \
-            -H "Accept: application/vnd.github+json" \
-            /repos/${{ github.repository }}/releases/tags/$CHANNEL \
-            --jq '.id' || echo "")
-          
-          if [ ! -z "$RELEASE_ID" ]; then
-            gh api \
-              --method DELETE \
-              -H "Accept: application/vnd.github+json" \
-              /repos/${{ github.repository }}/releases/$RELEASE_ID
-          fi
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # Create new channel release
       - name: Create Channel Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           name: "${{ steps.version.outputs.CHANNEL }} channel"
           tag_name: ${{ steps.version.outputs.CHANNEL }}
           body: |
-            Latest build in ${{ steps.version.outputs.CHANNEL }} channel
+            Latest build in the ${{ steps.version.outputs.CHANNEL }} channel.
             Version: ${{ steps.version.outputs.VERSION }}
             Commit: ${{ github.sha }}
-            
-            This release represents the latest build in the ${{ steps.version.outputs.CHANNEL }} channel.
           prerelease: ${{ steps.version.outputs.CHANNEL != 'release' }}
           files: release-artifacts/*.jar
-          draft: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

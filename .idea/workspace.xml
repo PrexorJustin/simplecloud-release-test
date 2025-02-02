@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f76883fd-98dc-4c7e-9ca3-0299bb4b8d20" name="Changes" comment="" />
+    <list default="true" id="f76883fd-98dc-4c7e-9ca3-0299bb4b8d20" name="Changes" comment="fix: import gpg key for signing releases">
+      <change beforePath="$PROJECT_DIR$/.github/workflows/release.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/release.yml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -18,12 +20,32 @@
   <component name="ExternalProjectsManager">
     <system id="GRADLE">
       <state>
+        <task path="$PROJECT_DIR$">
+          <activation />
+        </task>
         <projects_view>
           <tree_state>
             <expand>
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
                 <item name="simplecloud-controller" type="f1a62948:ProjectNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="simplecloud-controller" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="simplecloud-controller" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="publishing" type="c8890929:TasksNode$1" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="simplecloud-controller" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="shadow" type="c8890929:TasksNode$1" />
               </path>
             </expand>
             <select />
@@ -32,13 +54,409 @@
       </state>
     </system>
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="main" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;PrexorJustin&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;git@github.com:PrexorJustin/simplecloud-release-test.git&quot;,
+    &quot;accountId&quot;: &quot;534d5e5c-08e4-4173-824b-86366739a266&quot;
+  }
+}</component>
+  <component name="GoLibraries">
+    <option name="indexEntireGoPath" value="true" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 3
+}</component>
+  <component name="ProjectId" id="2sS4b7iNUU2e9WBk92i56jBY7u4" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "last_opened_file_path": "D:/controller/settings.gradle.kts",
-    "node.js.selected.package.tslint": "(autodetect)"
+    "Gradle.controller [publishAllPublicationsToSimplecloudRepository].executor": "Run",
+    "Gradle.controller [publishMavenJavaPublicationToSimplecloudRepository].executor": "Run",
+    "Gradle.controller [shadowJar].executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.go.formatter.settings.were.checked": "true",
+    "RunOnceActivity.go.migrated.go.modules.settings": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "develop",
+    "go.import.settings.migrated": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "D:/controller",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="RunManager" selected="Gradle.controller [publishMavenJavaPublicationToSimplecloudRepository]">
+    <configuration name="controller [publishAllPublicationsToSimplecloudRepository]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="publishAllPublicationsToSimplecloudRepository" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="controller [publishMavenJavaPublicationToSimplecloudRepository]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="publishMavenJavaPublicationToSimplecloudRepository" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="controller [shadowJar]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="shadowJar" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Gradle.controller [publishMavenJavaPublicationToSimplecloudRepository]" />
+        <item itemvalue="Gradle.controller [publishAllPublicationsToSimplecloudRepository]" />
+        <item itemvalue="Gradle.controller [shadowJar]" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-125ca727e0f0-intellij.indexing.shared.core-IU-243.23654.189" />
+        <option value="bundled-js-predefined-d6986cc7102b-822845ee3bb5-JavaScript-IU-243.23654.189" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="f76883fd-98dc-4c7e-9ca3-0299bb4b8d20" name="Changes" comment="" />
+      <created>1738435711141</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1738435711141</updated>
+      <workItem from="1738435713035" duration="7085000" />
+      <workItem from="1738442920046" duration="9680000" />
+      <workItem from="1738497233328" duration="1103000" />
+    </task>
+    <task id="LOCAL-00001" summary="fix: workflow">
+      <option name="closed" value="true" />
+      <created>1738435948258</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1738435948258</updated>
+    </task>
+    <task id="LOCAL-00002" summary="fix: workflow">
+      <option name="closed" value="true" />
+      <created>1738436643511</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1738436643511</updated>
+    </task>
+    <task id="LOCAL-00003" summary="fix: workflow">
+      <option name="closed" value="true" />
+      <created>1738436760522</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1738436760522</updated>
+    </task>
+    <task id="LOCAL-00004" summary="fix: workflow">
+      <option name="closed" value="true" />
+      <created>1738437194278</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1738437194278</updated>
+    </task>
+    <task id="LOCAL-00005" summary="fix: workflow">
+      <option name="closed" value="true" />
+      <created>1738437543732</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1738437543732</updated>
+    </task>
+    <task id="LOCAL-00006" summary="fix: workflow">
+      <option name="closed" value="true" />
+      <created>1738438141041</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1738438141041</updated>
+    </task>
+    <task id="LOCAL-00007" summary="fix: workflow">
+      <option name="closed" value="true" />
+      <created>1738438597585</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1738438597585</updated>
+    </task>
+    <task id="LOCAL-00008" summary="fix: workflow">
+      <option name="closed" value="true" />
+      <created>1738438974660</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1738438974660</updated>
+    </task>
+    <task id="LOCAL-00009" summary="fix: workflow">
+      <option name="closed" value="true" />
+      <created>1738439331141</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1738439331141</updated>
+    </task>
+    <task id="LOCAL-00010" summary="fix: workflow">
+      <option name="closed" value="true" />
+      <created>1738439704191</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1738439704191</updated>
+    </task>
+    <task id="LOCAL-00011" summary="fix: workflow">
+      <option name="closed" value="true" />
+      <created>1738439903609</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1738439903609</updated>
+    </task>
+    <task id="LOCAL-00012" summary="fix: workflow">
+      <option name="closed" value="true" />
+      <created>1738440200222</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1738440200222</updated>
+    </task>
+    <task id="LOCAL-00013" summary="fix: workflow">
+      <option name="closed" value="true" />
+      <created>1738441250987</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1738441250987</updated>
+    </task>
+    <task id="LOCAL-00014" summary="fix: workflow">
+      <option name="closed" value="true" />
+      <created>1738441736255</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1738441736255</updated>
+    </task>
+    <task id="LOCAL-00015" summary="fix: workflow">
+      <option name="closed" value="true" />
+      <created>1738442503731</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1738442503731</updated>
+    </task>
+    <task id="LOCAL-00016" summary="fix: workflow">
+      <option name="closed" value="true" />
+      <created>1738444022127</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1738444022127</updated>
+    </task>
+    <task id="LOCAL-00017" summary="fix: workflow">
+      <option name="closed" value="true" />
+      <created>1738444500162</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1738444500162</updated>
+    </task>
+    <task id="LOCAL-00018" summary="fix: workflow">
+      <option name="closed" value="true" />
+      <created>1738446151681</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1738446151681</updated>
+    </task>
+    <task id="LOCAL-00019" summary="fix: workflow">
+      <option name="closed" value="true" />
+      <created>1738447092920</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1738447092920</updated>
+    </task>
+    <task id="LOCAL-00020" summary="fix: workflow">
+      <option name="closed" value="true" />
+      <created>1738447235785</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1738447235785</updated>
+    </task>
+    <task id="LOCAL-00021" summary="fix: workflow">
+      <option name="closed" value="true" />
+      <created>1738447402805</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1738447402805</updated>
+    </task>
+    <task id="LOCAL-00022" summary="fix: workflow">
+      <option name="closed" value="true" />
+      <created>1738447934127</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1738447934127</updated>
+    </task>
+    <task id="LOCAL-00023" summary="fix: workflow">
+      <option name="closed" value="true" />
+      <created>1738447963798</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1738447963799</updated>
+    </task>
+    <task id="LOCAL-00024" summary="fix: workflow">
+      <option name="closed" value="true" />
+      <created>1738449514188</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1738449514188</updated>
+    </task>
+    <task id="LOCAL-00025" summary="fix: workflow">
+      <option name="closed" value="true" />
+      <created>1738449617913</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1738449617913</updated>
+    </task>
+    <task id="LOCAL-00026" summary="fix: workflow">
+      <option name="closed" value="true" />
+      <created>1738449674488</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1738449674488</updated>
+    </task>
+    <task id="LOCAL-00027" summary="fix: workflow">
+      <option name="closed" value="true" />
+      <created>1738449844343</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1738449844343</updated>
+    </task>
+    <task id="LOCAL-00028" summary="fix: workflow">
+      <option name="closed" value="true" />
+      <created>1738450148074</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1738450148074</updated>
+    </task>
+    <task id="LOCAL-00029" summary="fix: workflow">
+      <option name="closed" value="true" />
+      <created>1738450325175</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1738450325175</updated>
+    </task>
+    <task id="LOCAL-00030" summary="fix: import gpg key for signing releases">
+      <option name="closed" value="true" />
+      <created>1738498128227</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1738498128227</updated>
+    </task>
+    <option name="localTasksCounter" value="31" />
     <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="fix: workflow" />
+    <MESSAGE value="fix: import gpg key for signing releases" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix: import gpg key for signing releases" />
+  </component>
+  <component name="VgoProject">
+    <integration-enabled>false</integration-enabled>
+    <settings-migrated>true</settings-migrated>
   </component>
 </project>
