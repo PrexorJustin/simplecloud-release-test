@@ -152,7 +152,13 @@ subprojects {
             return@signing
         }
 
-        useGpgCmd()
-        sign(publishing.publications)
+        if (hasProperty("signingPassphrase")) {
+            val signingKey: String? by project
+            val signingPassphrase: String? by project
+            useInMemoryPgpKeys(signingKey, signingPassphrase)
+            sign(publishing.publications)
+        }
+//        useGpgCmd()
+//        sign(publishing.publications)
     }
 }

@@ -87,19 +87,19 @@ jobs:
           echo "CHANNEL=$CHANNEL" >> $GITHUB_OUTPUT
           echo "VERSION=$FINAL_VERSION" >> $GITHUB_OUTPUT
 
-      - name: Import GPG key
-        if: steps.version.outputs.CHANNEL == 'release'
-        run: |
-          # Setup GPG
-          echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
-          gpg --list-secret-keys --keyid-format LONG
-          # Configure GPG
-          mkdir -p ~/.gnupg
-          chmod 700 ~/.gnupg
-          echo "use-agent" > ~/.gnupg/gpg.conf
-          echo "pinentry-mode loopback" >> ~/.gnupg/gpg.conf
-          echo "allow-loopback-pinentry" > ~/.gnupg/gpg-agent.conf
-          gpg-connect-agent reloadagent /bye
+#      - name: Import GPG key
+#        if: steps.version.outputs.CHANNEL == 'release'
+#        run: |
+#          # Setup GPG
+#          echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
+#          gpg --list-secret-keys --keyid-format LONG
+#          # Configure GPG
+#          mkdir -p ~/.gnupg
+#          chmod 700 ~/.gnupg
+#          echo "use-agent" > ~/.gnupg/gpg.conf
+#          echo "pinentry-mode loopback" >> ~/.gnupg/gpg.conf
+#          echo "allow-loopback-pinentry" > ~/.gnupg/gpg-agent.conf
+#          gpg-connect-agent reloadagent /bye
 
       - name: Build with Gradle
         run: |
@@ -128,6 +128,8 @@ jobs:
           COMMIT_HASH: ${{ env.COMMIT_HASH }}
           SIMPLECLOUD_USERNAME: ${{ secrets.SIMPLECLOUD_USERNAME }}
           SIMPLECLOUD_PASSWORD: ${{ secrets.SIMPLECLOUD_PASSWORD }}
+          ORG_GRADLE_PROJECT_signingKey: ${{ secrets.GPG_PRIVATE_KEY }}
+          ORG_GRADLE_PROJECT_signingPassphrase: ${{ secrets.GPG_PASSPHRASE }}
 
       - name: Prepare Artifacts
         run: |
