@@ -89,22 +89,22 @@ jobs:
           echo "CHANNEL=$CHANNEL" >> $GITHUB_OUTPUT
           echo "VERSION=$FINAL_VERSION" >> $GITHUB_OUTPUT
 
-      - name: Import GPG Key
-        if: steps.version.outputs.CHANNEL == 'release'
-        run: |
-          echo "${{ secrets.GPG_PRIVATE_KEY }}" | base64 -d > private.key
-          
-          mkdir -p ~/.gnupg
-          echo "allow-preset-passphrase" > ~/.gnupg/gpg-agent.conf
-          echo "pinentry-mode loopback" >> ~/.gnupg/gpg.conf
-          gpg-connect-agent reloadagent /bye
-          
-          echo "test" > test.txt
-          echo "${{ secrets.GPG_PASSPHRASE }}" | gpg --batch --passphrase-fd 0 --pinentry-mode loopback -ab test.txt
-          
-          rm test.txt test.txt.asc
-        env:
-          GPG_TTY: $(tty)
+#      - name: Import GPG Key
+#        if: steps.version.outputs.CHANNEL == 'release'
+#        run: |
+#          echo "${{ secrets.GPG_PRIVATE_KEY }}" | base64 -d > private.key
+#
+#          mkdir -p ~/.gnupg
+#          echo "allow-preset-passphrase" > ~/.gnupg/gpg-agent.conf
+#          echo "pinentry-mode loopback" >> ~/.gnupg/gpg.conf
+#          gpg-connect-agent reloadagent /bye
+#
+#          echo "test" > test.txt
+#          echo "${{ secrets.GPG_PASSPHRASE }}" | gpg --batch --passphrase-fd 0 --pinentry-mode loopback -ab test.txt
+#
+#          rm test.txt test.txt.asc
+#        env:
+#          GPG_TTY: $(tty)
 
       - name: Build with Gradle
         run: |
