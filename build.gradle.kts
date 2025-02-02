@@ -22,7 +22,7 @@ fun determineVersion(): String {
 }
 
 fun determineRepositoryUrl(): String {
-    val baseUrl = "http://95.216.145.156"
+    val baseUrl = "http://94.130.98.51"
     return when (project.findProperty("releaseType")?.toString() ?: "snapshot") {
         "release" -> "$baseUrl/releases"
         "rc" -> "$baseUrl/rc"
@@ -64,6 +64,7 @@ subprojects {
                 url = uri(determineRepositoryUrl())
                 //remove for production
                 isAllowInsecureProtocol = true
+
                 credentials {
                     username = System.getenv("SIMPLECLOUD_USERNAME")
                         ?: (project.findProperty("simplecloudUsername") as? String)
@@ -151,6 +152,10 @@ subprojects {
             return@signing
         }
 
+        val signingKey: String? by project
+        val signingPassword: String? by project
+
+        useInMemoryPgpKeys(signingKey, signingPassword)
         sign(publishing.publications)
         useGpgCmd()
     }

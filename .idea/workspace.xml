@@ -6,6 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="f76883fd-98dc-4c7e-9ca3-0299bb4b8d20" name="Changes" comment="fix: workflow">
       <change beforePath="$PROJECT_DIR$/.github/workflows/release.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/release.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -98,7 +100,6 @@
     "RunOnceActivity.go.formatter.settings.were.checked": "true",
     "RunOnceActivity.go.migrated.go.modules.settings": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "android.gradle.sync.needed": "true",
     "git-widget-placeholder": "develop",
     "go.import.settings.migrated": "true",
     "kotlin-language-version-configured": "true",
@@ -202,7 +203,8 @@
       <option name="presentableId" value="Default" />
       <updated>1738435711141</updated>
       <workItem from="1738435713035" duration="7085000" />
-      <workItem from="1738442920046" duration="6634000" />
+      <workItem from="1738442920046" duration="9680000" />
+      <workItem from="1738497233328" duration="868000" />
     </task>
     <task id="LOCAL-00001" summary="fix: workflow">
       <option name="closed" value="true" />
@@ -428,7 +430,15 @@
       <option name="project" value="LOCAL" />
       <updated>1738450148074</updated>
     </task>
-    <option name="localTasksCounter" value="29" />
+    <task id="LOCAL-00029" summary="fix: workflow">
+      <option name="closed" value="true" />
+      <created>1738450325175</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1738450325175</updated>
+    </task>
+    <option name="localTasksCounter" value="30" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

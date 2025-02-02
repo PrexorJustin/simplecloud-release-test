@@ -87,6 +87,15 @@ jobs:
           echo "CHANNEL=$CHANNEL" >> $GITHUB_OUTPUT
           echo "VERSION=$FINAL_VERSION" >> $GITHUB_OUTPUT
 
+      - name: Import GPG Key
+        if: steps.version.outputs.CHANNEL == 'release'
+        run: |
+          echo "${{ secrets.GPG_PRIVATE_KEY }}" | base64 -d > private.key
+          gpg --import --batch private.key
+          rm private.key
+        env:
+          GPG_TTY: $(tty)
+
       - name: Build with Gradle
         run: |
           ./gradlew --parallel --build-cache clean build shadowJar \
@@ -97,6 +106,11 @@ jobs:
 
       - name: Publish to SimpleCloud Repository
         run: |
+          if [[ "${{ steps.version.outputs.CHANNEL }}" == "release" ]]; then
+          export ORG_GRADLE_PROJECT_signingKey="${{ secrets.GPG_PRIVATE_KEY }}"
+          export ORG_GRADLE_PROJECT_signingPassword="${{ secrets.GPG_PASSPHRASE }}"
+          fi
+          
           ./gradlew --parallel --build-cache publishMavenJavaPublicationToSimplecloudRepository \
             -PreleaseType=${{ steps.version.outputs.CHANNEL }} \
             -Pversion=${{ steps.version.outputs.VERSION }}
