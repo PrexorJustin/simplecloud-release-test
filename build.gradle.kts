@@ -1,4 +1,5 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.kotlin)
@@ -8,7 +9,7 @@ plugins {
 }
 
 fun determineVersion(): String {
-    val baseVersion = "0.0.30"
+    val baseVersion = project.findProperty("baseVersion")?.toString() ?: "0.0.0"
     val releaseType = project.findProperty("releaseType")?.toString() ?: "snapshot"
     val commitHash = System.getenv("COMMIT_HASH") ?: "local"
 
@@ -21,7 +22,7 @@ fun determineVersion(): String {
 }
 
 fun determineRepositoryUrl(): String {
-    val baseUrl = "http://172.26.96.250"
+    val baseUrl = "http://94.130.98.51"
     return when (project.findProperty("releaseType")?.toString() ?: "snapshot") {
         "release" -> "$baseUrl/releases"
         "rc" -> "$baseUrl/rc"
@@ -37,6 +38,11 @@ allprojects {
         mavenCentral()
         maven("https://buf.build/gen/maven")
         maven("https://repo.simplecloud.app/snapshots")
+    }
+
+    tasks.withType<JavaCompile> {
+        options.isFork = true
+        options.isIncremental = true
     }
 }
 
@@ -56,6 +62,9 @@ subprojects {
             maven {
                 name = "simplecloud"
                 url = uri(determineRepositoryUrl())
+                //remove for production
+                isAllowInsecureProtocol = true
+
                 credentials {
                     username = System.getenv("SIMPLECLOUD_USERNAME")
                         ?: (project.findProperty("simplecloudUsername") as? String)
@@ -69,13 +78,12 @@ subprojects {
         }
 
         publications {
-            // Not publish controller-runtime
             if (project.name == "controller-runtime") {
                 return@publications
             }
 
             create<MavenPublication>("mavenJava") {
-                from(components["java"])
+                artifact(tasks.named("shadowJar"))
             }
         }
     }
@@ -87,13 +95,17 @@ subprojects {
     kotlin {
         jvmToolchain(21)
         compilerOptions {
+            languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_0)
             apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_0)
+            jvmTarget.set(JvmTarget.JVM_21)
+            freeCompilerArgs.addAll("-Xjsr305=strict")
         }
     }
 
     tasks.named("shadowJar", ShadowJar::class) {
         mergeServiceFiles()
         archiveFileName.set("${project.name}.jar")
+        archiveClassifier.set("")
     }
 
     tasks.test {
@@ -135,12 +147,15 @@ subprojects {
     }
 
     signing {
-        // Only sign releases
         val releaseType = project.findProperty("releaseType")?.toString() ?: "snapshot"
         if (releaseType != "release") {
             return@signing
         }
 
+        val signingKey: String? by project
+        val signingPassword: String? by project
+
+        useInMemoryPgpKeys(signingKey, signingPassword)
         sign(publishing.publications)
         useGpgCmd()
     }
