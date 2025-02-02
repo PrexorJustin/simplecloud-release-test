@@ -40,7 +40,7 @@ jobs:
 
       - name: Make Gradle wrapper executable
         run: chmod +x ./gradlew
-        
+
       - name: Determine Version and Channel
         id: version
         run: |
@@ -58,10 +58,10 @@ jobs:
           if [[ -z "$VERSION" ]]; then
             COMMIT_HASH=$(git rev-parse --short HEAD)
             echo "COMMIT_HASH=$COMMIT_HASH" >> $GITHUB_ENV
-            
+          
             # Get the version by letting Gradle tell us
             VERSION=$(./gradlew properties -q | grep "version:" | awk '{print $2}')
-            
+          
             if [[ -z "$VERSION" ]]; then
               echo "Error: Could not determine version from Gradle"
               exit 1
@@ -70,13 +70,22 @@ jobs:
           
           echo "CHANNEL=$CHANNEL" >> $GITHUB_OUTPUT
           echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
-          
+
       - name: Import GPG key
         run: |
-          echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
+          echo -n "${{ secrets.GPG_PRIVATE_KEY }}" | base64 --decode | gpg --batch --import
+          
+          mkdir -p ~/.gnupg
           echo "allow-preset-passphrase" > ~/.gnupg/gpg-agent.conf
+          echo "pinentry-mode loopback" >> ~/.gnupg/gpg.conf
           gpg-connect-agent reloadagent /bye
+          
+          echo "test" > test.txt
           echo "${{ secrets.GPG_PASSPHRASE }}" | gpg --batch --passphrase-fd 0 --pinentry-mode loopback -ab test.txt
+          
+          rm test.txt test.txt.asc
+        env:
+          GPG_TTY: /dev/tty
 
       - name: Build with Gradle
         run: |
