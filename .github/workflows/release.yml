@@ -42,8 +42,6 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
           cache: 'gradle'
-          gpg-private-key: ${{ secrets.GPG_SECRET }}
-          gpg-passphrase:  'MAVEN_GPG_PASSPHRASE'
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
@@ -89,22 +87,19 @@ jobs:
           echo "CHANNEL=$CHANNEL" >> $GITHUB_OUTPUT
           echo "VERSION=$FINAL_VERSION" >> $GITHUB_OUTPUT
 
-#      - name: Import GPG Key
-#        if: steps.version.outputs.CHANNEL == 'release'
-#        run: |
-#          echo "${{ secrets.GPG_PRIVATE_KEY }}" | base64 -d > private.key
-#
-#          mkdir -p ~/.gnupg
-#          echo "allow-preset-passphrase" > ~/.gnupg/gpg-agent.conf
-#          echo "pinentry-mode loopback" >> ~/.gnupg/gpg.conf
-#          gpg-connect-agent reloadagent /bye
-#
-#          echo "test" > test.txt
-#          echo "${{ secrets.GPG_PASSPHRASE }}" | gpg --batch --passphrase-fd 0 --pinentry-mode loopback -ab test.txt
-#
-#          rm test.txt test.txt.asc
-#        env:
-#          GPG_TTY: $(tty)
+      - name: Import GPG key
+        if: steps.version.outputs.CHANNEL == 'release'
+        run: |
+          # Setup GPG
+          echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
+          gpg --list-secret-keys --keyid-format LONG
+          # Configure GPG
+          mkdir -p ~/.gnupg
+          chmod 700 ~/.gnupg
+          echo "use-agent" > ~/.gnupg/gpg.conf
+          echo "pinentry-mode loopback" >> ~/.gnupg/gpg.conf
+          echo "allow-loopback-pinentry" > ~/.gnupg/gpg-agent.conf
+          gpg-connect-agent reloadagent /bye
 
       - name: Build with Gradle
         run: |
@@ -117,13 +112,18 @@ jobs:
       - name: Publish to SimpleCloud Repository
         run: |
           if [[ "${{ steps.version.outputs.CHANNEL }}" == "release" ]]; then
-          export ORG_GRADLE_PROJECT_signingKey="${{ secrets.GPG_PRIVATE_KEY }}"
-          export ORG_GRADLE_PROJECT_signingPassword="${{ secrets.GPG_PASSPHRASE }}"
+            export GPG_TTY=$(tty)
+            export GRADLE_OPTS="-Dorg.gradle.daemon=false"
+            ./gradlew --no-daemon --parallel --build-cache publishMavenJavaPublicationToSimplecloudRepository \
+              -PreleaseType=${{ steps.version.outputs.CHANNEL }} \
+              -Pversion=${{ steps.version.outputs.VERSION }} \
+              -Psigning.gnupg.keyName="${{ secrets.GPG_KEY_ID }}" \
+              -Psigning.gnupg.passphrase="${{ secrets.GPG_PASSPHRASE }}"
+          else
+            ./gradlew --parallel --build-cache publishMavenJavaPublicationToSimplecloudRepository \
+              -PreleaseType=${{ steps.version.outputs.CHANNEL }} \
+              -Pversion=${{ steps.version.outputs.VERSION }}
           fi
-          
-          ./gradlew --parallel --build-cache publishMavenJavaPublicationToSimplecloudRepository \
-            -PreleaseType=${{ steps.version.outputs.CHANNEL }} \
-            -Pversion=${{ steps.version.outputs.VERSION }}
         env:
           COMMIT_HASH: ${{ env.COMMIT_HASH }}
           SIMPLECLOUD_USERNAME: ${{ secrets.SIMPLECLOUD_USERNAME }}
@@ -160,4 +160,3 @@ jobs:
           files: release-artifacts/*.jar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
