@@ -6,7 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="f76883fd-98dc-4c7e-9ca3-0299bb4b8d20" name="Changes" comment="fix: gpg key testing">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -71,7 +70,7 @@
     "git-widget-placeholder": "main",
     "go.import.settings.migrated": "true",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "D:/controller/settings.gradle.kts",
+    "last_opened_file_path": "D:/controller",
     "node.js.detected.package.eslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
@@ -95,7 +94,9 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1738498600555</updated>
-      <workItem from="1738498602324" duration="2361000" />
+      <workItem from="1738498602324" duration="3069000" />
+      <workItem from="1738503127252" duration="8000" />
+      <workItem from="1738650919897" duration="357000" />
     </task>
     <task id="LOCAL-00001" summary="fix: gpg key testing">
       <option name="closed" value="true" />
@@ -153,7 +154,15 @@
       <option name="project" value="LOCAL" />
       <updated>1738500337127</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="fix: gpg key testing">
+      <option name="closed" value="true" />
+      <created>1738501544337</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1738501544337</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
