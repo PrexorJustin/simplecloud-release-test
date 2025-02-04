@@ -117,7 +117,7 @@ jobs:
             ./gradlew --no-daemon --parallel --build-cache publishMavenJavaPublicationToSimplecloudRepository \
               -PreleaseType=${{ steps.version.outputs.CHANNEL }} \
               -Pversion=${{ steps.version.outputs.VERSION }} \
-              -Psigning.gnupg.keyName="${{ secrets.GPG_KEY_ID }}" \
+              -Psigning.gnupg.keyName="${{ secrets.GPG_PRIVATE_KEY }}" \
               -Psigning.gnupg.passphrase="${{ secrets.GPG_PASSPHRASE }}"
           else
             ./gradlew --parallel --build-cache publishMavenJavaPublicationToSimplecloudRepository \
